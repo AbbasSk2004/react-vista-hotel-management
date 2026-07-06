@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  // Safely fallback to local port 5000 if VITE_API_URL env is missing
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
 });
 
 api.interceptors.request.use((config) => {
@@ -27,43 +28,44 @@ api.interceptors.response.use(
 );
 
 export const authApi = {
-  login: (email, password) => api.post('/auth/login', { email, password }),
-  me: () => api.get('/auth/me'),
+  // Cleaned leading slashes to prevent url formatting oddities
+  login: (email, password) => api.post('auth/login', { email, password }),
+  me: () => api.get('auth/me'),
 };
 
 export const roomsApi = {
-  getAll: (params) => api.get('/rooms', { params }),
-  create: (data) => api.post('/rooms', data),
-  update: (id, data) => api.put(`/rooms/${id}`, data),
-  remove: (id) => api.delete(`/rooms/${id}`),
+  getAll: (params) => api.get('rooms', { params }),
+  create: (data) => api.post('rooms', data),
+  update: (id, data) => api.put(`rooms/${id}`, data),
+  remove: (id) => api.delete(`rooms/${id}`),
 };
 
 export const guestsApi = {
-  getAll: (search) => api.get('/guests', { params: { search } }),
-  getById: (id) => api.get(`/guests/${id}`),
-  create: (data) => api.post('/guests', data),
+  getAll: (search) => api.get('guests', { params: { search } }),
+  getById: (id) => api.get(`guests/${id}`),
+  create: (data) => api.post('guests', data),
 };
 
 export const reservationsApi = {
-  getAll: (params) => api.get('/reservations', { params }),
-  create: (data) => api.post('/reservations', data),
-  checkIn: (id) => api.put(`/reservations/${id}/checkin`),
-  checkOut: (id, data) => api.put(`/reservations/${id}/checkout`, data),
+  getAll: (params) => api.get('reservations', { params }),
+  create: (data) => api.post('reservations', data),
+  checkIn: (id) => api.put(`reservations/${id}/checkin`),
+  checkOut: (id, data) => api.put(`reservations/${id}/checkout`, data),
 };
 
 export const invoicesApi = {
-  getByReservation: (reservationId) => api.get(`/invoices/${reservationId}`),
+  getByReservation: (reservationId) => api.get(`invoices/${reservationId}`),
 };
 
 export const reportsApi = {
-  getSummary: () => api.get('/reports/summary'),
+  getSummary: () => api.get('reports/summary'),
 };
 
 export const staffApi = {
-  getAll: () => api.get('/staff'),
-  create: (data) => api.post('/staff', data),
-  update: (id, data) => api.put(`/staff/${id}`, data),
-  remove: (id) => api.delete(`/staff/${id}`),
+  getAll: () => api.get('staff'),
+  create: (data) => api.post('staff', data),
+  update: (id, data) => api.put(`staff/${id}`, data),
+  remove: (id) => api.delete(`staff/${id}`),
 };
 
 export default api;
